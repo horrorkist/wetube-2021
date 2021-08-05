@@ -1,0 +1,22 @@
+{
+  "name": "wetube",
+  "version": "1.0.0",
+  "description": "wetube2021",
+  "main": "index.js",
+  "scripts": {
+    "win": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/horrorkist/wetube-2021.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/horrorkist/wetube-2021/issues"
+  },
+  "homepage": "https://github.com/horrorkist/wetube-2021#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
