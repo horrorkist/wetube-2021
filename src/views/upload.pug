@@ -1,0 +1,10 @@
+extends base.pug
+
+block content
+    if (errorMessage)
+        div #{errorMessage} 
+    form(method="post")
+        input(name="title", placeholder="Title", required, maxlength=80)
+        input(name="description", placeholder="Description", required, maxlength=80)
+        input(name="hashtags", placeholder="Hashtags, seperated by commas", required, maxlength=80)
+        input(value="upload", type="submit")

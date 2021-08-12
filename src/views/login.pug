@@ -1,0 +1,14 @@
+extends base
+
+block content
+    if errorMessage
+        span=errorMessage
+    form(method="post")
+        input(type="email", name="email", required, placeholder="Email")
+        input(type="password", name="password", required, placeholder="Password")
+        input(type="submit", value="Log in")
+        a(href="/users/github/start") Continue with GitHub &rarr;
+    hr
+    div
+        span Don't have an account yet? 
+        a(href="/join") Make an account &rarr;
