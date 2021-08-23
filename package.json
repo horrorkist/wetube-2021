@@ -4,8 +4,12 @@
   "description": "wetube2021",
   "main": "index.js",
   "scripts": {
+    "start": "node build/init.js",
+    "build": "npm run build:server && npm run build:assets",
+    "build:assets": "webpack --mode=production",
+    "build:server": "babel src -d build",
     "dev": "nodemon --config nodemon.json",
-    "assets": "webpack --config webpack.config.js"
+    "assets": "webpack --config webpack.config.js --mode=development -w"
   },
   "repository": {
     "type": "git",
@@ -33,6 +37,7 @@
     "regenerator-runtime": "^0.13.9"
   },
   "devDependencies": {
+    "@babel/cli": "^7.14.8",
     "@babel/core": "^7.15.0",
     "@babel/node": "^7.14.9",
     "@babel/preset-env": "^7.15.0",
