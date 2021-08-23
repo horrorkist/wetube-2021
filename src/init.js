@@ -5,4 +5,6 @@ import "./models/video.js";
 import "./models/user.js";
 import app from "./index";
 
-app.listen(4000, () => console.log("Server Listening on Port: 4000"));
+const PORT = process.env.PORT || 4000;
+
+app.listen(PORT, () => console.log("Server Listening on Port: 4000"));
