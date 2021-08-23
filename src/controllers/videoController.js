@@ -1,39 +1,54 @@
-import videoModel from "../models/video.js";
+import videoDB from "../models/video.js";
+import userDB from "../models/user";
+import commentDB from "../models/comment";
 
 export const home = async (req, res) => {
-  const videos = await videoModel.find({}, (error, videos) => {});
+  const videos = await videoDB
+    .find({}, (error, videos) => {})
+    .populate("owner");
   res.render("home", { pageTitle: "Home", videos });
 };
 
 export const watch = async (req, res) => {
   const { id } = req.params;
-  const video = await videoModel.findById(id);
+  const video = await videoDB
+    .findById(id)
+    .populate("owner")
+    .populate("comments");
   res.render("watch", {
     pageTitle: video.title,
     video,
   });
 };
 
-export const getEdit = async (req, res) => {
+export const getEditVideo = async (req, res) => {
   const { id } = req.params;
-  const video = await videoModel.findById(id);
+  const video = await videoDB.findById(id);
+  const { user: _id } = req.session;
   if (!video) {
     return res.render("404", { pageTitle: "Video not found" });
+  }
+  if (String(video.owner._id) !== String(_id)) {
+    res.status(403).redirect("/");
   }
   res.render("edit", { pageTitle: `Edit: ${video.title}`, video });
 };
 
-export const postEdit = async (req, res) => {
+export const postEditVideo = async (req, res) => {
   const { id } = req.params;
   const { newTitle, newDescription, newHashtags } = req.body;
-  const video = await videoModel.exists({ _id: id });
+  const { user: _id } = req.session;
+  const video = await videoDB.exists({ _id: id });
   if (!video) {
     return res.status(404).render("404", { pageTitle: "Video not found" });
   }
-  await videoModel.findByIdAndUpdate(id, {
+  if (String(video.owner._id) !== String(_id)) {
+    res.status(403).redirect("/");
+  }
+  await videoDB.findByIdAndUpdate(id, {
     title: newTitle,
     description: newDescription,
-    hashtags: videoModel.formatHashtags(newHashtags),
+    hashtags: videoDB.formatHashtags(newHashtags),
   });
   return res.redirect(`/videos/${id}`);
 };
@@ -43,13 +58,22 @@ export const getUpload = (req, res) => {
 };
 
 export const postUpload = async (req, res) => {
+  const {
+    user: { _id },
+  } = req.session;
+  const { path: fileURL } = req.file;
   const { title, description, hashtags } = req.body;
   try {
-    await videoModel.create({
+    const newVideo = await videoDB.create({
+      fileURL,
       title,
       description,
-      hashtags: videoModel.formatHashtags(hashtags),
+      hashtags: videoDB.formatHashtags(hashtags),
+      owner: _id,
     });
+    const user = await userDB.findById(_id);
+    user.videos.push(newVideo._id);
+    user.save();
     return res.redirect("/");
   } catch (error) {
     console.log(error);
@@ -62,19 +86,80 @@ export const postUpload = async (req, res) => {
 
 export const getDeleteVideo = async (req, res) => {
   const { id } = req.params;
-  await videoModel.findByIdAndDelete(id);
+  const { user: _id } = req.session;
+  const video = await videoDB.findById(id);
+  if (!video) {
+    return res.status(404).render("404", { pageTitle: "Video not found" });
+  }
+  if (String(video.owner._id) !== String(_id)) {
+    return res.status(403).redirect("/");
+  }
+  await videoDB.findByIdAndDelete(id);
   return res.redirect("/");
 };
 
 export const getSearch = async (req, res) => {
   const { keyword } = req.query;
   if (keyword) {
-    const videos = await videoModel.find({
-      title: {
-        $regex: new RegExp(keyword, "i"),
-      },
-    });
+    const videos = await videoDB
+      .find({
+        title: {
+          $regex: new RegExp(keyword, "i"),
+        },
+      })
+      .populate("owner");
     return res.render("search", { pageTitle: "Search", videos });
   }
   return res.render("search", { pageTitle: "Search" });
+};
+
+export const registerView = async (req, res) => {
+  const { id } = req.params;
+  const video = await videoDB.findById(id);
+  if (!video) {
+    return res.sendStatus(404);
+  }
+  video.meta.views += 1;
+  await video.save();
+  return res.sendStatus(200);
+};
+
+export const createComment = async (req, res) => {
+  const {
+    session: { user },
+    body: { text },
+    params: { id },
+  } = req;
+  const newComment = await commentDB.create({
+    text,
+    owner: user._id,
+    video: id,
+  });
+  const video = await videoDB.findById(id);
+  video.comments.push(newComment);
+  await video.save();
+  const owner = await userDB.findById(user._id);
+  owner.comments.push(newComment);
+  await owner.save();
+  return res.status(201).json({ newCommentId: newComment._id });
+};
+
+export const deleteComment = async (req, res) => {
+  const {
+    session: { user },
+    params: { id },
+  } = req;
+  const comment = await commentDB
+    .findByIdAndDelete(id)
+    .populate("owner")
+    .populate("video");
+  await userDB.findOneAndUpdate(
+    { _id: comment.owner },
+    { $pullAll: { comments: [comment.id] } }
+  );
+  await videoDB.findOneAndUpdate(
+    { _id: comment.video },
+    { $pullAll: { comments: [comment.id] } }
+  );
+  return res.status(200).end();
 };

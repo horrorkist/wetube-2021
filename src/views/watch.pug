@@ -1,7 +1,53 @@
 extends base.pug
 
 block content
-    small=video.description
-    div
-        a(href=`/videos/${video.id}/edit`) Edit Video &rarr;
-    a(href=`/videos/${video.id}/delete`) Delete Video &rarr;
+    div.videoContainer(data-id=video._id)
+        video(src="/"+video.fileURL)
+        div#videoControls.videoControls
+            div.videoControls-row
+                div.videoControls__time
+                    span#currentTime 00:00
+                    span  / 
+                    span#totalTime 00:00
+                div.videoControls__timeline
+                    input(type="range", step="1", value=0, min="0")#timeline
+            div.videoControls-row
+                div.videoControls__play__volume
+                    button#play
+                        i.fas.fa-play
+                    button#mute
+                        i.fas.fa-volume-up
+                    input(type="range", step="0.1", value=0.5, min="0", max="1")#volume
+                div.videoControls__fullScreen
+                    button#fullScreen
+                        i.fas.fa-expand
+    div.video__data
+        p=video.description
+        small=video.createdAt
+        div
+            small Uploaded by 
+            a(href=`/users/${video.owner._id}`) #{video.owner.name}
+        br
+        if String(video.owner._id) === String(user._id)
+            a(href=`/videos/${video.id}/edit`) Edit Video &rarr;
+            a(href=`/videos/${video.id}/delete`) Delete Video &rarr;
+    if loggedIn
+        .video__add-comment
+            form.video__comment-form#commentForm
+                textarea(cols="30", rows="10", placeholder="Leave a comment...")
+                button Add Comment
+    .video__comments
+        ul
+            each comment in video.comments.reverse()
+                li.video__comment(data-id=comment.id)
+                    i.fas.fa-comment
+                    span  #{comment.text}
+                    if String(comment.owner) === String(user._id)
+                        i.fas.fa-comment.comment-delete
+
+block scripts
+    script(src="/assets/js/videoPlayer.js")
+    if loggedIn
+        script(src="/assets/js/commentSection.js")
+        
+            

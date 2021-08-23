@@ -1,0 +1,35 @@
+.auth-switch {
+  text-align: center;
+  margin: 20px 0px;
+  .auth-switch__btn {
+    color: $red;
+    text-decoration: underline;
+  }
+}
+
+.empty__message {
+  margin-bottom: 50px;
+  font-size: 18px;
+}
+
+.video-grid {
+  display: grid;
+  gap: 50px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.avatar {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+}
+
+.avatar {
+  display: flex;
+  border: 1px solid rosybrown;
+  justify-content: center;
+  align-items: center;
+  i {
+    font-size: 30px;
+  }
+}

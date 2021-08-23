@@ -1,0 +1,13 @@
+extends base
+
+block content
+    if errorMessage
+        span=errorMessage
+    form(method="post", enctype="multipart/form-data").edit-profile
+        label(for="avatar") Avatar
+        input(type="file", name="avatar", id="avatar", accept="image/*")
+        input(type="text", name="newName", required, value=`${user.name}`, placeholder="New name")
+        input(type="text", name="newLocation", value=`${user.location ? user.location : ""}`, placeholder="New location")
+        input(type="submit", value="Update Profile")
+        div.edit-profile__password
+            a(href="/users/change-password") Change Password &rarr;

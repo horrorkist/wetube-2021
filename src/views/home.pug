@@ -2,10 +2,10 @@ extends base.pug
 include mixins/video.pug
 
 block content
-    h1 home
-    a(href="/search") Search
-    if videos.length
+    div.video-grid
         each video in videos
-            +video(video)
-    else             
-        div Sorry nothing found
+                +video(video)
+                +video(video)
+                +video(video)
+        else             
+            div.empty__message No videos found

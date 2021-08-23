@@ -1,0 +1,49 @@
+// video mixin
+.video-mixin {
+  margin: 0px 20px;
+  .video-mixin__thumb {
+    height: 140px;
+    width: 224px;
+    border-radius: 7px;
+    background-color: ivory;
+  }
+  .video-mixin__data {
+    padding: 0px 15px;
+    .video-mixin__title {
+      font-size: 18px;
+      display: block;
+      margin-top: 10px;
+    }
+    .video-mixin__meta {
+      margin-top: 5px;
+      font-size: 12px;
+    }
+  }
+}
+
+.video__comments {
+  margin-top: 10px;
+  li {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    max-width: 420px;
+    width: 100%;
+    border-radius: 9999px;
+    margin-bottom: 5px;
+    padding: 10px;
+    i {
+      display: block;
+      color: black;
+      margin-right: 5px;
+    }
+    span {
+      color: black;
+    }
+  }
+  .comment-delete {
+    cursor: pointer;
+    color: red;
+    right: 5;
+  }
+}
