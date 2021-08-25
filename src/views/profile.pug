@@ -5,7 +5,7 @@ block content
     div.profile-wrapper
         div.profile__data
             if user.avatarUrl
-                img(src="/" + user.avatarUrl).avatar
+                img(src=user.avatarUrl).avatar
             else
                 a(href="/users/edit-profile").avatar.avatar-empty
                     i.fas.fa-plus

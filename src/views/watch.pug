@@ -2,7 +2,7 @@ extends base.pug
 
 block content
     div.videoContainer(data-id=video._id)
-        video(src="/"+video.fileURL)
+        video(src=video.fileURL)
         div#videoControls.videoControls
             div.videoControls-row
                 div.videoControls__time

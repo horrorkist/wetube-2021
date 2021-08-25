@@ -155,7 +155,7 @@ export const postEditProfile = async (req, res) => {
   const updatedUser = await userDB.findOneAndUpdate(
     { _id: req.session.user._id },
     {
-      avatarUrl: file ? file.path : req.session.user.avatarUrl,
+      avatarUrl: file ? file.location : req.session.user.avatarUrl,
       name: newName,
       location: newLocation,
     },
