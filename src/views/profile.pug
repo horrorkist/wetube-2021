@@ -10,9 +10,9 @@ block content
                 a(href="/users/edit-profile").avatar.avatar-empty
                     i.fas.fa-plus
             h3 #{user.name}'s profile
-        div.video-grid
-            if videos.length
+        if videos.length
+            div.video-grid
                 each video in videos
                     +video(video)
-            else
-                span.empty__message This user hasn't uploaded any videos yet.
+        else
+            span.empty__message This user hasn't uploaded any videos yet.
