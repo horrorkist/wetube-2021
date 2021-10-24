@@ -25,8 +25,6 @@ export const getEditVideo = async (req, res) => {
   const { id } = req.params;
   const video = await videoDB.findById(id);
   const _id = req.session.user._id;
-  console.log(video.owner._id);
-  console.log(_id);
   if (!video) {
     return res.render("404", { pageTitle: "Video not found" });
   }
@@ -88,7 +86,7 @@ export const postUpload = async (req, res) => {
 
 export const getDeleteVideo = async (req, res) => {
   const { id } = req.params;
-  const { user: _id } = req.session;
+  const _id = req.session.user._id;
   const video = await videoDB.findById(id);
   if (!video) {
     return res.status(404).render("404", { pageTitle: "Video not found" });
