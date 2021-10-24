@@ -29,9 +29,9 @@ export const getEditVideo = async (req, res) => {
     return res.render("404", { pageTitle: "Video not found" });
   }
   if (String(video.owner._id) !== String(_id)) {
-    res.status(403).redirect("/");
+    return res.status(403).redirect("/");
   }
-  res.render("edit", { pageTitle: `Edit: ${video.title}`, video });
+  return res.render("edit", { pageTitle: `Edit: ${video.title}`, video });
 };
 
 export const postEditVideo = async (req, res) => {
